@@ -48,7 +48,8 @@ public final class Constants {
     public static final int kDrivingMaxCurrent = 60;
     public static final int kTurningMaxCurrent = 30;
 
-    public static final double kMaxLinearSpeed = 4.80; // m / sec
+    // public static final double kMaxLinearSpeed = 4.80; // m / sec
+    public static final double kMaxLinearSpeed = 1.00; // m / sec
 
     public static final double kWheelOffset = 12.5;
 

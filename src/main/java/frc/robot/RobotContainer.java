@@ -54,7 +54,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // swerve drive
-    // m_Swerb.setDefaultCommand(new DefaultDrive());
+    m_Swerb.setDefaultCommand(new DefaultDrive());
 
     // reset swerve gyro
     driverController.y()
@@ -75,6 +75,18 @@ public class RobotContainer {
         indexing.set(0);
       },
       intake, indexing));
+      // intake
+      // driverController.y() 
+      // .whileTrue(new StartEndCommand(
+      //   () -> {
+      //     intake.set(-1);
+      //     indexing.set(-1);
+      //   }, 
+      //   () -> {
+      //     intake.set(0);
+      //     indexing.set(0);
+      //   },
+      //   intake, indexing));
 
     // shoot
     driverController.b() 
@@ -103,18 +115,18 @@ public class RobotContainer {
       ));
     
     // // shooter intake
-    // driverController.rightBumper() 
-    // .whileTrue(new StartEndCommand(
-    //   () -> {
-    //     shooter.set(.4);
-    //     indexing.set(-1);
-    //   },
-    //   () -> {
-    //     shooter.set(0);
-    //     indexing.set(0);
-    //   }, 
-    //   shooter, indexing
-    //   ));
+    driverController.y() 
+    .whileTrue(new StartEndCommand(
+      () -> {
+        shooter.set(.4);
+        indexing.set(-1);
+      },
+      () -> {
+        shooter.set(0);
+        indexing.set(0);
+      }, 
+      shooter, indexing
+      ));
     
     // // stop all
     // driverController.leftBumper() 
@@ -127,13 +139,13 @@ public class RobotContainer {
     //   intake, indexing, shooter
     //   ));
 
-    driverController.leftBumper().onTrue(
-      wrist.incrementUp()
-    );
+    // driverController.leftBumper().onTrue(
+    //   wrist.incrementUp()
+    // );
 
-    driverController.rightBumper().onTrue(
-      wrist.incrementDown()
-    );
+    // driverController.rightBumper().onTrue(
+    //   wrist.incrementDown()
+    // );
   }
 
   /**

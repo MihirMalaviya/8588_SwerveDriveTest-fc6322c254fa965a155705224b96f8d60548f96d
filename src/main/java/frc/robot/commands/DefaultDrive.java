@@ -31,14 +31,16 @@ public class DefaultDrive extends Command {
         double maxSpeed = Constants.DriveConstants.kMaxLinearSpeed;
         double vx = -joystick.getLeftY() * maxSpeed;
         double vy = -joystick.getLeftX() * maxSpeed;
-        double vw = -joystick.getRightX() * 0.1;
+        double vw = -joystick.getRightX() * .1;
+        // System.out.println(vw);
         
         // Apply slew rate limits
         vx = xRateLimiter.calculate(vx);
         vy = yRateLimiter.calculate(vy);
         vw = wRateLimiter.calculate(vw);
         
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, vw, Rotation2d.fromDegrees(-m_Swerb.getYaw()));
+        // ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, vw, Rotation2d.fromDegrees(-m_Swerb.getYaw()));
+        ChassisSpeeds speeds = new ChassisSpeeds(vx, vy, vw);
         m_Swerb.drive(speeds);
     }
     
