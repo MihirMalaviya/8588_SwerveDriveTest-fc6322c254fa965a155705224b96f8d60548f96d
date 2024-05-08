@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -32,13 +34,27 @@ public class Intake extends SubsystemBase {
   // CAN IDs
   public static final int kIntakeCanId = 20;
 
-  // MEASUREMENTS
   // public static final double kWheelDiameter = Units.inchesToMeters(4.0); // meters
   // public static final double kGearRatio = 1.0 / 12.0; // 12:1 gear ratio
+
+  // MEASUREMENTS
+  public static final double kWheelDiameter = Units.inchesToMeters(4.0); // meters
+  public static final double kGearRatio = 1.0 / 12.0; // 12:1 gear ratio
+
+  // UNIT CONVERSION
+  public static final double kEncoderPositionFactor = kWheelDiameter * Math.PI; // meters
+  public static final double kEncoderVelocityFactor = (kWheelDiameter * Math.PI) / 60.0; // meters per second
+
+  // PID tuning
+  public static final double kP  = 1;
+  public static final double kI  = 0;
+  public static final double kD  = 0;
+  public static final double kFF = 0;
 
   // ---
   private CANSparkMax m_intake;
   private RelativeEncoder m_intakeEncoder;
+  private SparkPIDController m_intakePIDController;
 
   // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
@@ -56,13 +72,37 @@ public class Intake extends SubsystemBase {
 
     m_intakeEncoder = m_intake.getEncoder();
     
-    m_intake.setInverted(true);
+    // m_intake.setInverted(true);
 
     setCoast();
     m_intake.setSmartCurrentLimit(50);
 
     // Save the SPARK MAX configurations. If a SPARK MAX browns out during operation, it will maintain the above configurations.
     m_intake.burnFlash();
+
+    m_intakePIDController = m_intake.getPIDController();
+    m_intakePIDController.setFeedbackDevice(m_intakeEncoder);
+
+    m_intakeEncoder.setPositionConversionFactor(kEncoderPositionFactor);
+    m_intakeEncoder.setVelocityConversionFactor(kEncoderVelocityFactor);
+
+    m_intakePIDController.setP(kP);
+    m_intakePIDController.setI(kI);
+    m_intakePIDController.setD(kD);
+    m_intakePIDController.setFF(kFF);
+    // m_intakePIDController.setOutputRange(IntakeConstants.kIntakeMinOutput, IntakeConstants.kIntakeMaxOutput);
+    m_intakePIDController.setOutputRange(-1, 1);
+
+    setCoast();
+    m_intake.setSmartCurrentLimit(30);
+
+    m_intakePIDController.setSmartMotionMaxAccel(1, 0);
+
+    // Save the SPARK MAX configurations. If a SPARK MAX browns out during operation, it will maintain the above configurations.
+    m_intake.burnFlash();
+
+    m_intakeEncoder.setPosition(0);
+
 
     setCoast();
 
@@ -107,7 +147,9 @@ public class Intake extends SubsystemBase {
   public void set(double speed) {
     SmartDashboard.putNumber("Intake Speed", speed);
 
-    m_intake.set(speed);
+    // m_intake.set(speed);
+
+    m_intakePIDController.setReference(speed, CANSparkMax.ControlType.kVelocity);
   }
   
   @Override

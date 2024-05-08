@@ -93,7 +93,7 @@ public class RobotContainer {
     .whileTrue(new StartEndCommand(
       () -> {
         shooter.set(-1);
-        indexing.set(1);
+        indexing.set(.6);
       },
       () -> {
         shooter.set(0);
@@ -114,12 +114,12 @@ public class RobotContainer {
       shooter
       ));
     
-    // // shooter intake
+    // shooter intake
     driverController.y() 
     .whileTrue(new StartEndCommand(
       () -> {
         shooter.set(.4);
-        indexing.set(-1);
+        indexing.set(-.6);
       },
       () -> {
         shooter.set(0);

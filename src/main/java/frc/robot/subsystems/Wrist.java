@@ -57,8 +57,8 @@ public class Wrist extends TrapezoidProfileSubsystem {
     
   // ------
 
-  private final double defaultPosition = Units.degreesToRadians(30); // radians
-  private       double currentPosition = Units.degreesToRadians(30); // radians
+  private final double defaultPosition = Math.PI / 6; // radians
+  private       double currentPosition = Math.PI / 6; // radians
 
   private final ArmFeedforward m_feedforward =
       new ArmFeedforward(
